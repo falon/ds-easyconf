@@ -1,0 +1,104 @@
+INSTANCES:
+  tst-example:
+    DM: cn=Directory Manager
+    pwd: password
+    uri:
+      tst-01.example.com: 389
+      tst-02.example.com: 389
+    config:
+      replace:
+        - nsslapd-ndn-cache-max-size: 209715200
+        - nsslapd-sizelimit: 20000
+        - nsslapd-syntaxlogging: "on"
+        - nsslapd-syntaxcheck: "off"
+    plugin:
+      attr-uniq:
+        set:
+          attribute uniqueness:
+            --subtree=c=en:
+              - enabled: "on"
+              - attr-name: uid
+              - across-all-subtrees: "on"
+    backend:
+      config:
+        set:
+          - cache-autosize: 0
+        set-1:
+          - dbcachesize: 209715200
+      suffix:
+        set:
+          c=en:
+            - cache-memsize: 104857600
+          o=us:
+            - cache-memsize: 1048576
+      index:
+        add:
+          c=en:
+            --attr=personalattribute:
+              - index-type: pres
+              - index-type: eq
+            --attr=companyattribute:
+              - index-type: pres
+              - index-type: eq
+    replication:
+      create-manager:
+        - name: replication manager
+        - passwd: password
+      create-changelog:
+      set-changelog:
+        - max-age: 7d
+      enable:
+        --suffix=c=en:
+          - role: master
+          - replica-id:
+              tst-01.example.com: 50001
+              tst-02.example.com: 50002
+          - bind-dn: cn=replication manager,cn=config
+          - bind-passwd: password
+        --suffix=c=us:
+          - role: master
+          - replica-id:
+              tst-01.example.com: 50021
+              tst-02.example.com: 50022
+          - bind-dn: cn=replication manager,cn=config
+          - bind-passwd: password
+    repl-agmt:
+      create:
+        tst-01.example.com:
+          en 1-->2:
+            - suffix: c=en
+            - host: tst-02.example.com
+            - port: 389
+            - conn-protocol: LDAP
+            - bind-dn: cn=replication manager,cn=config
+            - bind-passwd: password
+            - bind-method: SIMPLE
+          us 1-->2:
+            - suffix: c=us
+            - host: tst-02.example.com
+            - port: 389
+            - conn-protocol: LDAP
+            - bind-dn: cn=replication manager,cn=config
+            - bind-passwd: password
+            - bind-method: SIMPLE
+            - bind-passwd: password
+            - bind-method: SIMPLE
+        tst-02.example.com:
+          en 2-->1:
+            - suffix: c=en
+            - host: tst-01.example.com
+            - port: 389
+            - conn-protocol: LDAP
+            - bind-dn: cn=replication manager,cn=config
+            - bind-passwd: password
+            - bind-method: SIMPLE
+          us 2-->1:
+            - suffix: c=us
+            - host: tst-01.example.com
+            - port: 389
+            - conn-protocol: LDAP
+            - bind-dn: cn=replication manager,cn=config
+            - bind-passwd: password
+            - bind-method: SIMPLE
+    ldapmodify:
+      - f: /setup/modify_replication_manager.ldif
