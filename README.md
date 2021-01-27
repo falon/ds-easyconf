@@ -34,10 +34,22 @@ Then run
 
 `dnf install python3-ds-easyconf`
 
+You can install `ds-easyconf` only on one server which have access to all other ones.
+
 ## RUN
 
-Now you can modify your `/etc/ds-easyconf/ds-easyconf.conf` and run
+First, we suppose you create your LDAP instances with `dscreate` on all servers.
+
+Then, in the server where you have installed `ds-easyconf` you can modify your `/etc/ds-easyconf/ds-easyconf.conf` and run
 
 ```ds-easyconf -h <server to configure>```
 
 You can add multiple `-i <instance name>` if you want to configure only some instances listed on the config file.
+
+All commands execute in the config file order. Some interesting points:
+
+- yaml doesn't allow duplicated keys. You can add **key-*n*** where `n` is a number to repeat the same key. The `-n` will be removed.
+- `on` and `off` values must be inside quotation marks (ie: `"on"`)
+- If you need to set attributes value and name in a single key, don't separate them by a spaces:
+  - `--attr <name>:` is wrong.
+  - `--attr=<name>:` is fine.
