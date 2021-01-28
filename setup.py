@@ -5,12 +5,13 @@ with open("README.md", "r") as fh:
 
 setup(
     name='ds-easyconf',
-    version='1.0',
+    version='1.0.1',
     description='Easy dsconf manager',
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="389ds rhds directory LDAP configuration config",
     scripts=['ds-easyconf.py'],
+    packages=[],
     include_package_data = False,
     data_files=[
         ('/etc/ds-easyconf', ['ds-easyconf.conf.dist']),
