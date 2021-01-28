@@ -22,13 +22,11 @@ curl -1sLf \
   | sudo -E bash
 ```
 
-If you have a modular python, you may have to add
+If you have a modular OS, please enable the 389-ds:
 
-`module_hotfixes=true`
+`dnf module enable 389-ds`
 
-under
-
-`[csi-dseasyconf]` section of `/etc/yum.repos.d/csi-dseasyconf.repo`.
+Check at the 389ds version, it must be **1.4** or greather.
 
 Then run
 
