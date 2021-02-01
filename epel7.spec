@@ -65,7 +65,7 @@ rm -rf html/.{doctrees,buildinfo}
 rm -rf %{buildroot}%{_bindir}/*
 {%- endif %}
 %{__python{{ pv }}} setup.py install --skip-build --root %{buildroot}
-mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.conf.dist %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.conf
+mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.yaml.dist %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.yaml
 {%- endfor -%}
 {% if data.has_test_suite %}
 
@@ -82,7 +82,7 @@ mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.conf.dist %{buildroot}%{
 {%- if data.doc_license %}
 %license %{_datarootdir}/licenses/%{pypi_name}/{{data.doc_license|join(' ')}}
 {%- endif %}
-%config(noreplace) %{_sysconfdir}/%{pypi_name}/%{pypi_name}.conf
+%config(noreplace) %{_sysconfdir}/%{pypi_name}/%{pypi_name}.yaml
 {%- if pv == data.base_python_version %}
 {%- for script in data.scripts %}
 %{_bindir}/{{ script }}
@@ -128,6 +128,10 @@ mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.conf.dist %{buildroot}%{
 {% endif %}
 %changelog
 * {{ data.changelog_date_packager }} - {{ data.version }}-1
+- Fix an error in setup.py.
+* Mon Feb 01 2021 Marco Favero <m.faverof@gmail.com> - 1.0.3-1
+- Renamed ds-easyconf.conf in ds-easyconf.yaml.
+* Mon Feb 01 2021 Marco Favero <m.faverof@gmail.com> - 1.0.2-1
 - Fixed an error in instance parsing.
 * Wed Jan 27 2021 Marco Favero <m.faverof@gmail.com> - 1.0.1-1
 - Initial package.

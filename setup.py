@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='ds-easyconf',
-    version='1.0.2',
+    version='1.0.4',
     description='Easy dsconf manager',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -14,7 +14,7 @@ setup(
     packages=[],
     include_package_data = False,
     data_files=[
-        ('/etc/ds-easyconf', ['ds-easyconf.conf.dist']),
+        ('/etc/ds-easyconf', ['ds-easyconf.yaml.dist']),
         ('/usr/share/doc/ds-easyconf', ['README.md']),
         ('/usr/share/licenses/ds-easyconf', ['LICENSE']),
     ],

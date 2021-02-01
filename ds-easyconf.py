@@ -181,17 +181,17 @@ if dirserver is None:
     sys.exit(2)
 
 # get the config from FHS conform dir
-CONFIG = os.path.join(os.path.dirname("/etc/ds-easyconf/"), "ds-easyconf.conf")
+CONFIG = os.path.join(os.path.dirname("/etc/ds-easyconf/"), "ds-easyconf.yaml")
 if not os.path.isfile(CONFIG):
     # developing stage
-    CONFIG = os.path.join(os.path.dirname(__file__), "ds-easyconf.conf")
+    CONFIG = os.path.join(os.path.dirname(__file__), "ds-easyconf.yaml")
 
 if not os.path.isfile(CONFIG):
     # Try to copy dist file in first config file
-    distconf = os.path.join(os.path.dirname(CONFIG), "ds-easyconf.conf.dist")
+    distconf = os.path.join(os.path.dirname(CONFIG), "ds-easyconf.yaml.dist")
     if os.path.isfile(distconf):
-        print("First run? I don't find <ds-easyconf.conf>, but <ds-easyconf.conf.dist> exists. I try to rename it.")
-        os.rename(distconf, os.path.join(os.path.dirname(distconf), "ds-easyconf.conf"))
+        print("First run? I don't find <ds-easyconf.yaml>, but <ds-easyconf.yaml.dist> exists. I try to rename it.")
+        os.rename(distconf, os.path.join(os.path.dirname(distconf), "ds-easyconf.yaml"))
 
 if os.path.isfile(CONFIG):
     INSTANCES = load_yaml(CONFIG, "INSTANCES")
