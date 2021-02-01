@@ -128,4 +128,6 @@ mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.conf.dist %{buildroot}%{
 {% endif %}
 %changelog
 * {{ data.changelog_date_packager }} - {{ data.version }}-1
+- Fixed an error in instance parsing.
+* Wed Jan 27 2021 Marco Favero <m.faverof@gmail.com> - 1.0.1-1
 - Initial package.

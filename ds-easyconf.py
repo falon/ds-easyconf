@@ -151,7 +151,8 @@ class bcolors:
 # get argv
 argv = sys.argv[1:]
 installInst = []
-usage = 'Usage: {} -h <dirsrvhostname> [-i <instance> [-i <instance2>] ...]'.format(sys.argv[0])
+dirserver = None
+usage = 'Usage: {} -h <dirsrvhostname> [-i <instance> [-i <instance2>] ...] [--help]'.format(sys.argv[0])
 try:
     opts, args = getopt.getopt(argv,"h:i:",["help"])
 except getopt.GetoptError:
@@ -171,6 +172,11 @@ for opt, arg in opts:
 
 if args:
     print('Unhadled arguments!')
+    print (usage)
+    sys.exit(2)
+
+if dirserver is None:
+    print('Missing server parameter (-h).')
     print (usage)
     sys.exit(2)
 
@@ -233,12 +239,13 @@ for instance in INSTANCES:
     dsconf_commands = compose_command(INSTANCES[instance], dsformat, dsconf, dirserver)
     # ldapmodify commands
     ldapmod_commands = []
-    if isinstance(INSTANCES[instance]['ldapmodify'], list):
-        for attribute in INSTANCES[instance]['ldapmodify']:
-            if isinstance(attribute, dict):
-                for param, value in attribute.items():
-                    param = uniqueize(param)
-                    ldapmod_commands.append("{}\0-{}\0{}".format(ldapmodify, param, value))
+    if 'ldapmodify' in INSTANCES[instance]:
+        if isinstance(INSTANCES[instance]['ldapmodify'], list):
+            for attribute in INSTANCES[instance]['ldapmodify']:
+                if isinstance(attribute, dict):
+                    for param, value in attribute.items():
+                        param = uniqueize(param)
+                        ldapmod_commands.append("{}\0-{}\0{}".format(ldapmodify, param, value))
     # Execute commands
     #  dsconf commands
     errors = execute_commands(dsconf_commands, bcolors)
