@@ -34,7 +34,7 @@ Then run
 
 You can install `ds-easyconf` only on one server which have access to all other ones.
 
-Unfortunately, at least until version **1.4.3.8** `dsconf` requires a valid `defaults.inf` file to work.
+Unfortunately, at least until version **1.4.3.8**, in order to work `dsconf` requires a valid `defaults.inf` file.
  In the remote host you must copy a valid `defaults.inf` from an host where you installed the **389ds**.
  The `defaults.inf` must be placed in the path `/usr/share/dirsrv/inf/`.
 
