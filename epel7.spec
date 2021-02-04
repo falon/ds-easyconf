@@ -128,6 +128,8 @@ mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.yaml.dist %{buildroot}%{
 {% endif %}
 %changelog
 * {{ data.changelog_date_packager }} - {{ data.version }}-1
+- Allow relative path in ldapmodify ldif file.
+* Mon Feb 01 2021 Marco Favero <m.faverof@gmail.com> - 1.0.4-1
 - Fix an error in setup.py.
 * Mon Feb 01 2021 Marco Favero <m.faverof@gmail.com> - 1.0.3-1
 - Renamed ds-easyconf.conf in ds-easyconf.yaml.

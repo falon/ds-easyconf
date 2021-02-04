@@ -1,13 +1,13 @@
 # ds-easyconf
-Starting with 389ds > 1.4 the LDAP browser has been removed. A new console is integrated in cockpit and new command line tools perform the configuration.
+Starting with 389ds > 1.4 the LDAP browser has been removed. Cockpit provides the new console and new commandline tools perform the configuration.
 
 With `dscreate` you can read some configuration parameters from a `inf` file, but this is a little set of parameters.
 
-Because you could have many instances and many dbs, it could be difficult to maintain all configuration aand you must call `dsconf` (or the equivalent `ldapmodify` operations) many times.
+Because you could have many instances and many dbs, it could be difficult to maintain all configuration and you must call `dsconf` (or the equivalent `ldapmodify` operations) many times.
 
 With `ds-easyconf.py` you can provide all configuration parameters in a single **yaml** file. Simply run `ds-easyconf.py -h <ldapserver>` to fully configure your 389ds instance.
 
-The configuration file provides **yaml** block corresponding to the dsconf parameters. To better understand you can see at the conf.dist file provided by default. Here you have one instance and two multimaster servers.
+The configuration file provides **yaml** blocks corresponding to the dsconf parameters. To better understand you can see at the *yaml.dist* file provided by default. Here you find one instance and two multimaster servers.
 
 The only exception at the above ierarchy is in `repl-agmt` --> `create`, which could be followed by the server name (fqdn) where install the children replication agreements. The same idea is used to find out the `replica-id` and the instances allowed on each server you provide.
 

@@ -196,6 +196,9 @@ if not os.path.isfile(CONFIG):
 if os.path.isfile(CONFIG):
     INSTANCES = load_yaml(CONFIG, "INSTANCES")
 skipped_instances = set()
+dirpath = os.path.dirname(CONFIG)
+if not dirpath:
+    dirpath = '.'
 
 # command specific constructor
 dsformat={
@@ -245,6 +248,9 @@ for instance in INSTANCES:
                 if isinstance(attribute, dict):
                     for param, value in attribute.items():
                         param = uniqueize(param)
+                        if param == 'f':
+                            if not os.path.isabs(value):
+                                value =  "{}/{}".format(dirpath,value)
                         ldapmod_commands.append("{}\0-{}\0{}".format(ldapmodify, param, value))
     # Execute commands
     #  dsconf commands
