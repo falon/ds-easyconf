@@ -48,6 +48,9 @@ Then, in the server where you have installed `ds-easyconf` you can modify your `
 
 You can add multiple `-i <instance name>` if you want to configure only some instances listed on the config file.
 
+You can specify the config file to read with the `-c` switch. For instance, you can create a config file just to run all
+ replication initialization after the complete installation ended.
+
 All commands execute in the config file order. Some interesting points:
 
 - yaml doesn't allow duplicated keys. You can add **key-*n*** where `n` is a number to repeat the same key. The `-n` will be removed.

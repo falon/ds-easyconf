@@ -152,9 +152,10 @@ class bcolors:
 argv = sys.argv[1:]
 installInst = []
 dirserver = None
-usage = 'Usage: {} -h <dirsrvhostname> [-i <instance> [-i <instance2>] ...] [--help]'.format(sys.argv[0])
+config_file = 'ds-easyconf.yaml'
+usage = 'Usage: {} -h <dirsrvhostname> [-c <conf>] [-i <instance> [-i <instance2>] ...] [--help]'.format(sys.argv[0])
 try:
-    opts, args = getopt.getopt(argv,"h:i:",["help"])
+    opts, args = getopt.getopt(argv,"h:i:c:",["help"])
 except getopt.GetoptError:
     print (usage)
     sys.exit(2)
@@ -163,6 +164,8 @@ for opt, arg in opts:
         dirserver = arg
     elif opt == '-i':
         installInst.append(arg)
+    elif opt == '-c':
+        config_file = arg
     elif opt == '--help':
         print (usage)
         sys.exit(0)
@@ -181,20 +184,23 @@ if dirserver is None:
     sys.exit(2)
 
 # get the config from FHS conform dir
-CONFIG = os.path.join(os.path.dirname("/etc/ds-easyconf/"), "ds-easyconf.yaml")
+CONFIG = os.path.join(os.path.dirname("/etc/ds-easyconf/"), config_file)
 if not os.path.isfile(CONFIG):
     # developing stage
-    CONFIG = os.path.join(os.path.dirname(__file__), "ds-easyconf.yaml")
+    CONFIG = os.path.join(os.path.dirname(__file__), config_file)
 
 if not os.path.isfile(CONFIG):
     # Try to copy dist file in first config file
-    distconf = os.path.join(os.path.dirname(CONFIG), "ds-easyconf.yaml.dist")
+    distconf = os.path.join(os.path.dirname(CONFIG), "{}.dist".format(config_file))
     if os.path.isfile(distconf):
-        print("First run? I don't find <ds-easyconf.yaml>, but <ds-easyconf.yaml.dist> exists. I try to rename it.")
-        os.rename(distconf, os.path.join(os.path.dirname(distconf), "ds-easyconf.yaml"))
+        print("First run? I don't find <{}>, but <{}.dist> exists. I try to rename it.".format(config_file, config_file))
+        os.rename(distconf, os.path.join(os.path.dirname(distconf), config_file))
 
 if os.path.isfile(CONFIG):
     INSTANCES = load_yaml(CONFIG, "INSTANCES")
+else:
+    print ("I can't find the config file <{}>.\n".format(config_file))
+    sys.exit(2)
 skipped_instances = set()
 dirpath = os.path.dirname(CONFIG)
 if not dirpath:
@@ -265,6 +271,7 @@ if configured_instances:
     print("\nWe have configured the following instances:")
     for instance in configured_instances:
         print("\t{}\tErrors: {}".format(instance['name'], instance['errors']))
+print ("\n{} instances configured.".format(len(configured_instances)))
 
 if exit == 0:
     print("\n{}Process ended with success!{}\n".format(bcolors.BOLD, bcolors.ENDC))
