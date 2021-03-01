@@ -128,6 +128,8 @@ mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.yaml.dist %{buildroot}%{
 {% endif %}
 %changelog
 * {{ data.changelog_date_packager }} - {{ data.version }}-1
+- Fixed a severe bug in dsconf command build.
+* Fri Feb 12 2021 Marco Favero <m.faverof@gmail.com> - 1.0.6-1
 - Added arg "-c" in order to select custom config yaml file.
 * Mon Feb 01 2021 Marco Favero <m.faverof@gmail.com> - 1.0.5-1
 - Allow relative path in ldapmodify ldif file.

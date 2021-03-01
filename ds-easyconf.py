@@ -216,18 +216,20 @@ dsformat={
 }
 
 
-dsconf = distutils.spawn.find_executable('dsconf')
-ldapmodify = distutils.spawn.find_executable('ldapmodify')
-if dsconf is None:
+dsconfInit = distutils.spawn.find_executable('dsconf')
+ldapmodifyInit = distutils.spawn.find_executable('ldapmodify')
+if dsconfInit is None:
     print("{}dsconf command not found.{}".format(bcolors.FAIL,bcolors.ENDC))
     sys.exit(1)
-if ldapmodify is None:
+if ldapmodifyInit is None:
     print("{}ldapmodify command not found.{}".format(bcolors.FAIL,bcolors.ENDC))
     sys.exit(1)
 
 exit = 0
 configured_instances = []
 for instance in INSTANCES:
+    ldapmod_commands = []
+    dsconf_commands = []
     if installInst:
         if instance not in installInst:
             print ("{}Skipping instance <{}> as per command line arguments.{}".format(bcolors.NOTICE, instance, bcolors.ENDC))
@@ -241,13 +243,12 @@ for instance in INSTANCES:
     bindDN = INSTANCES[instance]['DM']
     bindPWD = INSTANCES[instance]['pwd']
     URI = 'ldap://{}:{}'.format(dirserver,dirserver_port)
-    dsconf = "{}\0-D\0{}\0-w\0{}\0{}".format(dsconf, bindDN, bindPWD, URI)
-    ldapmodify = "{}\0-D\0{}\0-w\0{}\0-p\0{}\0-vvv\0-h\0{}".format(ldapmodify, bindDN, bindPWD, dirserver_port, dirserver)
+    dsconf = "{}\0-D\0{}\0-w\0{}\0{}".format(dsconfInit, bindDN, bindPWD, URI)
+    ldapmodify = "{}\0-D\0{}\0-w\0{}\0-p\0{}\0-vvv\0-h\0{}".format(ldapmodifyInit, bindDN, bindPWD, dirserver_port, dirserver)
     # parse config
     #  dsconf commands
     dsconf_commands = compose_command(INSTANCES[instance], dsformat, dsconf, dirserver)
     # ldapmodify commands
-    ldapmod_commands = []
     if 'ldapmodify' in INSTANCES[instance]:
         if isinstance(INSTANCES[instance]['ldapmodify'], list):
             for attribute in INSTANCES[instance]['ldapmodify']:
