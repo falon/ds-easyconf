@@ -33,6 +33,11 @@ def uniqueize(string):
 def compose_command(elements, myformat, cli, ldapserver='localhost',
                     previous_directive='', previous_previous_directive='', commands=[]):
     initial_cli = cli
+    if not previous_directive and not previous_previous_directive:
+        # We are at the first run. We clear the list of results, because it
+        # survives among the calls, it  they don't initialize commands
+        # explicitly.
+        commands.clear()
     for directive in elements:
         if directive in ('DM', 'pwd', 'uri', 'ldapmodify'):
             continue
@@ -45,7 +50,7 @@ def compose_command(elements, myformat, cli, ldapserver='localhost',
                 cli += "\0{}".format(directive)
             #
             compose_command(elements[directive], myformat, cli, ldapserver,
-                            directive, previous_directive, commands)
+                            directive, previous_directive)
         elif isinstance(elements[directive], list):
             ''' Key with list values '''
             cli += "\0{}".format(directive)
@@ -138,15 +143,16 @@ def execute_commands(commands, colors):
     return errors
 
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    NOTICE = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+  HEADER = '\033[95m'
+  OKBLUE = '\033[94m'
+  OKCYAN = '\033[96m'
+  OKGREEN = '\033[92m'
+  NOTICE = '\033[93m'
+  FAIL = '\033[91m'
+  ENDC = '\033[0m'
+  BOLD = '\033[1m'
+  UNDERLINE = '\033[4m'
+
 
 # get argv
 argv = sys.argv[1:]
@@ -267,6 +273,8 @@ for instance in INSTANCES:
     print("{}End of work on {}{}".format(bcolors.BOLD, instance, bcolors.ENDC), end="\n\n")
     exit += errors
     configured_instances.append({'name': instance, 'errors': errors})
+    del dsconf_commands
+    del ldapmod_commands
 
 if configured_instances:
     print("\nWe have configured the following instances:")
