@@ -44,9 +44,9 @@ def compose_command(elements, myformat, cli, ldapserver='localhost',
         directive = uniqueize(directive)
         if isinstance(elements[directive], dict):
             # repl-agmt management
-            if previous_previous_directive == 'repl-agmt' and previous_directive == 'create' and ldapserver != directive:
+            if previous_previous_directive == 'repl-agmt' and ldapserver != directive:
                 continue
-            if previous_directive != 'create' and previous_previous_directive != 'repl-agmt':
+            if previous_previous_directive != 'repl-agmt':
                 cli += "\0{}".format(directive)
             #
             compose_command(elements[directive], myformat, cli, ldapserver,
