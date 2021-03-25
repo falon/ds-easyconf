@@ -41,24 +41,23 @@ def compose_command(elements, myformat, cli, ldapserver='localhost',
     for directive in elements:
         if directive in ('DM', 'pwd', 'uri', 'ldapmodify'):
             continue
-        directive = uniqueize(directive)
         if isinstance(elements[directive], dict):
             # repl-agmt management
             if previous_previous_directive == 'repl-agmt' and ldapserver != directive:
                 continue
             if previous_previous_directive != 'repl-agmt':
-                cli += "\0{}".format(directive)
+                cli += "\0{}".format(uniqueize(directive))
             #
             compose_command(elements[directive], myformat, cli, ldapserver,
                             directive, previous_directive)
         elif isinstance(elements[directive], list):
             ''' Key with list values '''
-            cli += "\0{}".format(directive)
+            cli += "\0{}".format(uniqueize(directive))
             for attributes in elements[directive]:
                 if isinstance(attributes, dict):
                     for attribute, value in attributes.items():
-                        cli += applyFormat(previous_directive,
-                                           directive, myformat,
+                        cli += applyFormat(uniqueize(previous_directive),
+                                           uniqueize(directive), myformat,
                                            attribute, value, ldapserver)
                 else:
                     cli += "\0--{}".format(attributes)
@@ -67,11 +66,11 @@ def compose_command(elements, myformat, cli, ldapserver='localhost',
         else:
             if elements[directive] is None:
                 ''' Key without value '''
-                cli += "\0{}".format(directive)
+                cli += "\0{}".format(uniqueize(directive))
             if elements[directive] is not None:
                 ''' Key with single value '''
-                cli += applyFormat(previous_directive, directive,
-                                   myformat, directive, elements[directive])
+                cli += applyFormat(uniqueize(previous_directive), uniqueize(directive),
+                                   myformat, uniqueize(directive), elements[directive])
             # print(cli)
             commands.append(cli)
         cli = initial_cli

@@ -128,6 +128,8 @@ mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.yaml.dist %{buildroot}%{
 {% endif %}
 %changelog
 * {{ data.changelog_date_packager }} - {{ data.version }}-1
+- Fixed a bug for duplicated keys management.
+* Tue Mar 02 2021 Marco F <m.faverof@gmail.com> - 1.0.9-1
 - Allow any repl-agmt command.
 * Mon Mar 01 2021 Marco F <m.faverof@gmail.com> - 1.0.8-1
 - Finally fixed a severe bug in dsconf command build.
