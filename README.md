@@ -42,9 +42,9 @@ Unfortunately, at least until version **1.4.3.8**, in order to work `dsconf` req
 
 First, we suppose you create your LDAP instances with `dscreate` on all servers.
 
-Then, in the server where you have installed `ds-easyconf` you can modify your `/etc/ds-easyconf/ds-easyconf.conf` and run
+Then, in the server where you have installed `ds-easyconf` you can modify your `/etc/ds-easyconf/ds-easyconf.yaml` and run
 
-```ds-easyconf -h <server to configure>```
+```ds-easyconf.py -h <server to configure>```
 
 You can add multiple `-i <instance name>` if you want to configure only some instances listed on the config file.
 
@@ -58,3 +58,14 @@ All commands execute in the config file order. Some interesting points:
 - If you need to set attributes value and name in a single key, don't separate them by spaces:
   - `--attr <name>:` is wrong.
   - `--attr=<name>:` is fine.
+
+## ANSIBLE INTEGRATION
+You could add `ds-easyconf.py` in an Ansible play as a command.
+
+Unfortunately `dsconf` is not idempotent. There are some hints in order to run the command many times and obtain always a success status, hovewer.
+
+First, in ldapmodify use `replace` in place of `add`. About `dsconf`, we see a set of errors which happen when the command executes more than one time. Items already existing are not actual errors, but failure because they are already set.
+You can add these errors in the **FALSE_ERRORS** var in the yaml config file. A set of predefined errors are configured by default, as you can see looking at *ds-easyconf.yaml*.
+Each element is a regular expression. If the command error match any regex, the the *error* is declassified as *warning* and the exit status will stay at `0`.
+
+The exit status of `ds-easyconf.py` is the sum of all errors.

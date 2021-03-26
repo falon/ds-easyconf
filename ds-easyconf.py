@@ -18,6 +18,7 @@ import yaml
 import distutils.spawn
 import textwrap
 import subprocess
+import operator
 
 
 def load_yaml(file, part):
@@ -112,34 +113,54 @@ def wrapper(color, text):
     return "{}{}{}".format(color, text, '\033[0m')
 
 
-def printout(subres,colors):
+def printout(subres,colors, noerrors):
+    ret = False
+    error = False
+    warning = False
+    msg = "[ {}KO{} ]".format(colors.FAIL, colors.ENDC)
     if subres.returncode != 0:
-        print("[ {}KO{} ]".format(colors.FAIL, colors.ENDC), end=' ')
+        error = True
+        for noerr in noerrors:
+            if re.search(noerr, subres.stdout):
+                ret = True
+                error = False
+                warning = True
+                break
     else:
-        print("[ {}OK{} ]".format(colors.OKGREEN, colors.ENDC), end=' ')
+        msg = "[ {}OK{} ]".format(colors.OKGREEN, colors.ENDC)
+        ret = True
+    print(msg, end=' ')
     print(wrapper(colors.NOTICE, ' '.join(subres.args)))
     if subres.returncode != 0:
+        if error:
+            print(wrapper(bcolors.FAIL,'ERROR executing this action'))
         if subres.stdout:
             print(wrapper(bcolors.BOLD, subres.stdout))
         if subres.stderr:
             print(wrapper(bcolors.FAIL,subres.stderr))
         print()
-        return False
+        return ret, error, warning
     print(wrapper(bcolors.OKCYAN, subres.stdout), end="\n\n")
-    return True
+    return ret, error, warning
 
 
-def execute_commands(commands, colors):
+def execute_commands(commands, colors, noerrors=[]):
     ''' Iterate over array of commands to execute '''
     errors = 0
+    warnings = 0
     for command in commands:
         arg=command.split("\0")
+        type= arg[0]
         result = subprocess.run(arg, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        if not printout(result, colors):
-            errors += 1
-    if errors:
-        wrapper(colors.FAIL,"PAY ATTENTION: {} errors detected during the configuration of instance <{}>, see above.".format(errors, instance))
-    return errors
+        success, returned_error, returned_warn = printout(result, colors, noerrors)
+        if not success:
+            if returned_error:
+                errors += 1
+        if returned_warn:
+            warnings += 1
+    if errors or warnings:
+        print(wrapper(colors.FAIL,"PAY ATTENTION: {} errors and {} warnings detected during the configuration of instance <{}> using <{}>, see above.".format(errors, warnings, instance, type)), end="\n\n")
+    return errors, warnings
 
 class bcolors:
   HEADER = '\033[95m'
@@ -203,6 +224,7 @@ if not os.path.isfile(CONFIG):
 
 if os.path.isfile(CONFIG):
     INSTANCES = load_yaml(CONFIG, "INSTANCES")
+    false_errors = load_yaml(CONFIG, "FALSE_ERRORS")
 else:
     print ("I can't find the config file <{}>.\n".format(config_file))
     sys.exit(2)
@@ -266,19 +288,19 @@ for instance in INSTANCES:
                         ldapmod_commands.append("{}\0-{}\0{}".format(ldapmodify, param, value))
     # Execute commands
     #  dsconf commands
-    errors = execute_commands(dsconf_commands, bcolors)
+    errors, warnings = execute_commands(dsconf_commands, bcolors, false_errors)
     #  ldamodify commands
-    errors += execute_commands(ldapmod_commands, bcolors)
+    errors, warnings = tuple(map(operator.add, (errors, warnings), execute_commands(ldapmod_commands, bcolors, false_errors)))
     print("{}End of work on {}{}".format(bcolors.BOLD, instance, bcolors.ENDC), end="\n\n")
     exit += errors
-    configured_instances.append({'name': instance, 'errors': errors})
+    configured_instances.append({'name': instance, 'errors': errors, 'warnings': warnings})
     del dsconf_commands
     del ldapmod_commands
 
 if configured_instances:
     print("\nWe have configured the following instances:")
     for instance in configured_instances:
-        print("\t{}\tErrors: {}".format(instance['name'], instance['errors']))
+        print("\t{}\tErrors: {}\tWarnings: {}".format(instance['name'], instance['errors'], instance['warnings']))
 print ("\n{} instances configured.".format(len(configured_instances)))
 
 if exit == 0:

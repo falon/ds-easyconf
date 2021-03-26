@@ -102,3 +102,12 @@ INSTANCES:
             - bind-method: SIMPLE
     ldapmodify:
       - f: /setup/modify_replication_manager.ldif
+
+FALSE_ERRORS:
+  - '^Error: There is nothing to set in the (.*) plugin entry$'
+  - '^Error: Already exists$'
+  - '^Error: Changelog already exists$'
+  - '^Error: Replication is already enabled for this suffix$'
+  - '^Error: A replication agreement with the same name already exists$'
+  - '^Error: Can not delete index because it does not exist$'
+  - '^Error: Type or value exists$'
