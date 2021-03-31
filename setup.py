@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='ds-easyconf',
-    version='1.1.0',
+    version='1.1.1',
     description='Easy dsconf manager',
     long_description=long_description,
     long_description_content_type="text/markdown",
