@@ -23,7 +23,13 @@ import operator
 
 def load_yaml(file, part):
     with open(file, 'r') as ymlfile:
-        config_parameters = yaml.load(ymlfile, Loader=yaml.SafeLoader)[part]
+        try:
+            config_parameters = yaml.load(ymlfile, Loader=yaml.SafeLoader)[part]
+        except KeyError:
+            if part == 'INSTANCES':
+                config_parameters = {}
+            if part == 'FALSE_ERRORS':
+                config_parameters = []
     return config_parameters
 
 
