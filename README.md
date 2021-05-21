@@ -13,6 +13,7 @@ The only exception at the above ierarchy is in `repl-agmt` --> `create`, which c
 
 When you provide the server name with the `-h` switch, `ds-easyconf.py` will configure only the instances expected by conf in that server, with the corresponding `replica-id` and *agreements*.
 
+
 ## INSTALL
 On Centos/RHEL 8 simply create the repo:
 
