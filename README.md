@@ -59,6 +59,12 @@ All commands execute in the config file order. Some interesting points:
 - If you need to set attributes value and name in a single key, don't separate them by spaces:
   - `--attr <name>:` is wrong.
   - `--attr=<name>:` is fine.
+- You can add multivalue argument in this way:
+  ```
+  - arg:
+    - value 1
+    - value 2
+  ``` 
 
 ## ANSIBLE INTEGRATION
 You could add `ds-easyconf.py` in an Ansible play as a command.

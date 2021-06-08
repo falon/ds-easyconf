@@ -109,6 +109,11 @@ def applyFormat(parent, directive, myformat, attr, value, host='localhost'):
         return myformat[parent][directive].format(attr, value)
     else:
         '''A default format '''
+        if isinstance(value, list):
+            ret = ''
+            for thisval in value:
+                ret = ret + "\0{}".format(thisval)
+            return "\0--{}{}".format(attr, ret)
         return "\0--{}={}".format(attr, value)
 
 

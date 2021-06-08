@@ -128,6 +128,8 @@ mv %{buildroot}%{_sysconfdir}/%{pypi_name}/%{pypi_name}.yaml.dist %{buildroot}%{
 {% endif %}
 %changelog
 * {{ data.changelog_date_packager }} - {{ data.version }}-1
+- Allow to set multivalue argument as an array.
+* Wed Mar 31 2021 Marco F <m.faverof@gmail.com> - 1.1.1-1
 - Handle KeyError loading config file.
 * Fri Mar 26 2021 Marco F <m.faverof@gmail.com> - 1.1.0-1
 - Introduced FALSE_ERRORS in config file to ease error handling.
