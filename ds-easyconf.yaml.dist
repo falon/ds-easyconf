@@ -15,10 +15,12 @@ INSTANCES:
       attr-uniq:
         set:
           attribute uniqueness:
-            --subtree=c=en:
-              - enabled: "on"
-              - attr-name: uid
-              - across-all-subtrees: "on"
+            - subtree:
+                - c=en
+                - o=airus
+            - enabled: "on"
+            - attr-name: uid
+            - across-all-subtrees: "off"
     backend:
       config:
         set:
